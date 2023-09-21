@@ -78,37 +78,20 @@ def distr_best_cluster(individual_sn, y_pred, sn_group, batch_size, n_clusters, 
     group_pred_list_in = labels
     group_pred_collect = np.array([group_pred_list_in,group_pred_event_in])
     group_pred_collect = np.transpose(group_pred_collect)
-    #group_pred_collect = group_pred_collect[np.argsort(group_pred_collect[:,0])]
     return group_pred_collect
 
 def plot_cluster_tree(code_rule, y_pred, cluster_centers):
-    #y_pred = kmeans.labels_
     indexs = pd.value_counts(y_pred).index
     cluster_centers_test = cluster_centers
-    # if code_rule:
-    #     cluster_centers_test = kmeans.cluster_centers_[indexs]
-    # else:
-    #     cluster_centers_test = kmeans.cluster_centers_
-    #cluster_centers_test = scaler.inverse_transform(cluster_centers_test)
-    #Z = hierarchy.linkage(cluster_centers_test, 'ward')
-    #Z = hierarchy.linkage(cluster_centers_test,  method = 'single', metric = 'cosine')
     Z = hierarchy.linkage(cluster_centers_test,  method = 'average', metric = 'correlation')
-    #plt.figure(figsize=[16, 9], dpi=100)
-    #fig, ax = plt.subplots()
     plt.figure(figsize=(16,9),dpi=100)
-    #ax.set_yscale("log")
-    #plt.title('Dendrogram of Beehive Category', fontsize=20)
     plt.xlabel('Patterns', fontsize=20)
-    #plt.ylabel('distance (Ward)',fontsize=10)
     plt.ylabel('Correlation Distance',fontsize=20)
     plt.xticks(fontsize=20, rotation = 0)
     plt.yticks(fontsize=20)
     hierarchy.dendrogram(Z, color_threshold=0.7, leaf_font_size=20, leaf_rotation=0, labels = np.arange(len(cluster_centers))+1)
     # 画水平线，y纵坐标，c颜色，lw线条粗细，linestyle线形
     plt.axhline(y=240, c='grey', lw=1, linestyle='dashed')
-    # color_threshold设定颜色阈值，小于color_threshold根据簇节点为一簇
-
-    # color_threshold设定颜色阈值，小于color_threshold根据簇节点为一簇
 
 def get_info(info, indexs, y_pred):
     individuals_sn_info = np.unique(info[:,1])
@@ -173,11 +156,8 @@ def plot_data(data, plt_mode, n_clusters, xticks, yticks, xlabel_name):
 
         Z = hierarchy.linkage(np.array(data),  method = 'average', metric = 'correlation')
         plt.figure(figsize=[16, 9], dpi=100)
-        #fig, ax = plt.subplots()
-        #ax.set_yscale("log")
         plt.title('Hierarchical Clustering Dendrogram')
         plt.xlabel('cluster number', fontsize=10)
-        #plt.ylabel('distance (Ward)',fontsize=10)
         plt.ylabel('distance (Average)',fontsize=10)
         plt.xticks(fontsize=10)
         plt.yticks(fontsize=10)
@@ -239,8 +219,6 @@ class Compact():
 
 
 def cluster_redefine(num, points):
-    #num = np.array([int(x[1]) for x in info])
-    #points = np.array([x[3] for x in info])
     num_count = pd.value_counts(num)
     num_index = np.sort(num_count.index.values)
     cluster = num_count.size
@@ -259,7 +237,6 @@ def cluster_redefine(num, points):
 def myplot(x, y, label=None, xlimit=None, size=(9, 3),fileName=None):
     display.set_matplotlib_formats('svg')
     if len(x) == len(y):
-        #plt.figure(figsize=size)
         if xlimit and isinstance(xlimit, tuple):
             plt.xlim(xlimit)
         plt.scatter(x, y, marker = "x", label=label)
@@ -330,14 +307,11 @@ def plot_twin(x, x_ff, y1, y2, y3, y4, y3_ff, x_label, y_labels, number):
         ax2 = ax1.twinx()
         img1, = ax1.plot(x,y1,c = 'tab:blue')
         img2, = ax2.plot(x,y2,marker='o', ls='None', c = 'tab:green')
-        #img3_add, = ax2.plot(x_ff,y3_ff,marker='v', ls='None', c = 'tab:red')
             #获取对应折线图颜色给到spine ylabel yticks yticklabels
         axs = [ax1,ax2]
         imgs = [img1,img2]
-        #y_labels = ['temperature', 'weight','category', 'category_ff', 'Entrance_counts']
         for  i in range(len(axs)): 
             axs[i].spines['right'].set_color(imgs[i].get_color())
-            #axs[i].set_ylabel('y{}'.format(i+1),c = imgs[i].get_color())
             axs[i].set_ylabel(y_labels[i],c = imgs[i].get_color() , fontsize=20)
             axs[i].tick_params(axis = 'y', color = imgs[i].get_color(), labelcolor = imgs[i].get_color(), labelsize = 12)            
             axs[i].spines['left'].set_color(img1.get_color())#注意ax1是left
@@ -347,12 +321,10 @@ def plot_twin(x, x_ff, y1, y2, y3, y4, y3_ff, x_label, y_labels, number):
         ax1.set_ylim(-20,60)
         ax2.set_ylim(0,23)
         ax2.yaxis.set_minor_locator(plt.MultipleLocator(1))
-        #plt.legend([img1, img2, img3_add], ["temperature", "Category", "Category_ff"], loc='upper left')
         plt.legend([img1, img2], ["Temperature", "Category"], loc='upper left')
         year_total = []
         plot_set = 3  #设置为根据日落日出调整背景色
         backGround_color(x, plot_set, ax2)  #设置背景色
-        #ax4.set_ylim(0,10000)
         plt.tight_layout()
 
         plt.show()
@@ -367,16 +339,12 @@ def plot_twin(x, x_ff, y1, y2, y3, y4, y3_ff, x_label, y_labels, number):
         img2, = ax2.plot(x,y2,marker='o', ls='None', c = 'tab:green')        
         img3, = ax3.plot(x,y3,c = 'tab:blue')
         img4 = ax4.bar(x,y4, color = 'tab:purple', alpha = 0.5, width = 0.03)
-        #ax4.set_yscale("log", base = 2)
-        #img3_add, = ax2.plot(x_ff,y3_ff,marker='v', ls='None', c = 'tab:red')
         #获取对应折线图颜色给到spine ylabel yticks yticklabels
         axs = [ax1,ax2,ax3, ax4]
         imgs = [img1,img2,img3, img4]
-        #y_labels = ['temperature', 'weight','category', 'category_ff', 'Entrance_counts']
         for  i in range(len(axs)): 
             if (i!=3):
                 axs[i].spines['right'].set_color(imgs[i].get_color())
-                #axs[i].set_ylabel('y{}'.format(i+1),c = imgs[i].get_color())
                 axs[i].set_ylabel(y_labels[i],c = imgs[i].get_color(), fontsize=12)
                 axs[i].tick_params(axis = 'y', color = imgs[i].get_color(), labelcolor = imgs[i].get_color(), labelsize = 12)
                 axs[i].spines['left'].set_color(img1.get_color())#注意ax1是left
@@ -392,7 +360,6 @@ def plot_twin(x, x_ff, y1, y2, y3, y4, y3_ff, x_label, y_labels, number):
         ax3.set_ylim(min(y3),max(y3))
         ax4.set_ylim(min(y4),max(y4))
         plt.legend([img1, img2, img3, img4], ["Temperature", "Category", "Weight", "Entrance_counts"], loc='upper left')
-        #ax4.set_ylim(0,10000)
         plt.tight_layout()
         plt.show()
 
@@ -426,7 +393,6 @@ def draw_bar_four(x, y, number, label):
     width = 0.08  # 柱状图的宽度，可以根据自己的需求和审美来改
     gap = 0.01
 
-    #plt.figure(figsize=(16,9),dpi=100)
     fig, ax = plt.subplots()
     if (number == 8):
         a = y[0].tolist()
@@ -462,22 +428,15 @@ def draw_bar_four(x, y, number, label):
         rects1 = plt.bar(x - (width+gap), a, width, label=label[0], color = 'tab:blue')
         rects2 = plt.bar(x , b, width, label=label[1], color = 'tab:green')
         rects3 = plt.bar(x + (width+gap), c, width, label=label[2],color = 'tab:orange')     
-    #rects5 = ax.bar(x + width*2 + 0.04, e, width, label='e')
 
 
     # 为y轴、标题和x轴等添加一些文本。
-    #ax.set_ylabel(label[3], fontsize=30)
-    #ax.set_xlabel(label[4], fontsize=30)
     plt.xlabel('Pattern', fontsize=30)
     plt.ylabel('Proportion (%)',fontsize=30)
-    #ax.set_title(title)
+
     plt.xticks(x,fontsize=30)
     plt.yticks(fontsize=30)
     plt.legend(fontsize=20)
-    #ax.set_xticks(x)
-    #ax.set_xticklabels(labels)
-    #plt.grid()
-    #ax.legend()
 
 def Counts_Data_To_Table(data, x_labels, n_clusters, file_name):
     data_group = []
@@ -497,7 +456,6 @@ def Counts_Data_To_Table(data, x_labels, n_clusters, file_name):
         date_cluster_sort = sorted(data_cluster)
         data_group.append(data_cluster)
         data_group_sort.append(date_cluster_sort)
-    #data_group_sort = data_group.sort()
     labels = [i for i in range(n_clusters)]
     l1 = labels
     l2 = data_group
@@ -553,11 +511,9 @@ def plot_temp_cat(point_select, x_time, temp, category, x_time_ff, y_num_ff, plo
     #x_cate = x_time[start_point:len(temp)]
     cate = category[start_point:len(temp)]
     # 绘图
-    #fig,ax1 = plt.subplots(figsize = cm2inch(16,9))
     img1 = sns.lineplot(x='time', y='signal', data=df, ax = ax1, color = 'tab:blue')
     sns.set(style="darkgrid")
-    #fig_add = plt.gcf()
-    #ax = fig.axes[0]
+
     ax1.set_zorder(1)
     ax2 = plt.twinx()
     img2, = ax2.plot(x_cate, cate, marker='o', ls='None', c = 'tab:green', label = 'cate')
@@ -574,7 +530,6 @@ def plot_temp_cat(point_select, x_time, temp, category, x_time_ff, y_num_ff, plo
     color = ['tab:blue', 'green']
     for  i in range(len(axs)): 
         axs[i].spines['right'].set_color(color[i])
-        #axs[i].set_ylabel('y{}'.format(i+1),c = imgs[i].get_color())
         axs[i].set_ylabel(y_labels[i],c = color[i])
         axs[i].tick_params(axis = 'y', color = color[i], labelcolor = color[i], labelsize = 12)
         axs[i].spines['left'].set_color(color[0])#注意ax1是le
@@ -584,47 +539,6 @@ def plot_temp_cat(point_select, x_time, temp, category, x_time_ff, y_num_ff, plo
         plt.legend(handles=[red_patch, img2, img3_add], labels = ["Temperature","Category", "Category_ff"], loc='upper left')
     else:
         plt.legend(handles=[red_patch, img2], labels = ["Temperature","Category"], loc='upper left')
-
-    # spring_group = [[],[],[],[],[]]
-    # summer_group = [[],[],[],[],[]]
-    # autum_group = [[],[],[],[],[]]
-    # winter_group = [[],[],[],[],[]]
-    # for i in range (0, 5):
-    #     spring_group[i] = []
-    #     summer_group[i] = []
-    #     autum_group[i] = []
-    #     winter_group[i] = []
-
-    # year_total = [2019, 2020, 2021, 2022, 2023]
-    # year_append = []
-    # for j in range(0, len(x_time)):
-    #     date = x_time[j].strftime('%Y-%m-%d')
-    #     month =int(date[5:7])
-    #     day = int(date[8:11])
-    #     year = int(date[0:4])
-    #     for k in range (0, len(year_total)):
-    #         if (year == year_total[k]):
-    #             if (month > 3 and  month <= 6):
-    #                 spring_group[k].append(x_time[j])
-    #             elif (month > 6 and  month <= 9):
-    #                 summer_group[k].append(x_time[j])
-    #             elif(month > 9 and  month <= 12):
-    #                 autum_group[k].append(x_time[j])
-    #             else:
-    #                 winter_group[k].append(x_time[j])
-    # season_group = [spring_group, summer_group, autum_group, winter_group]
-
-    # for i in range(0, len(season_group)):
-    #     for j in range(0, len(year_total)):
-    #         if len(season_group[i][j]):
-    #             if (season_group[i][j] == spring_group[j]):
-    #                 ax2.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='green', alpha=0.2)
-    #             elif (season_group[i][j] == summer_group[j]):
-    #                 ax2.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='red', alpha=0.2)
-    #             elif (season_group[i][j] == autum_group[j]):
-    #                 ax2.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='yellow', alpha=0.2)     
-    #             elif (season_group[i][j] == winter_group[j]):
-    #                 ax2.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='blue', alpha=0.2)   
     plot_set = 2 
     backGround_color(x_time, plot_set, ax2)
     plt.show()
@@ -699,13 +613,10 @@ def backGround_color(x_time, plot_set, ax):
             dates.append((current_date, current_season))  
             current_date += timedelta(days=1)  
         
-        # 设置图形大小  
-        #plt.figure(figsize=(12, 4)) 
-        
+        # 设置图形大小          
         # 绘制日期区间对应的季节背景色  
         for i, (date, season) in enumerate(dates):  
             if i < len(dates) - 1:  
-                #if season != dates[i + 1][1]:  
                 ax.axvspan(dates[i][0], dates[i + 1][0], facecolor=season_color[season], alpha=0.1)  
 
     elif (plot_set == 3):
@@ -731,9 +642,6 @@ def backGround_color(x_time, plot_set, ax):
             current_day_night = [day_night for day_night, time_range in day_nights.items() if current_date.hour in time_range][0]  
             dates.append((current_date, current_day_night))  
             current_date += timedelta(hours=0.5)  
-        
-        # 设置图形大小  
-        #plt.figure(figsize=(12, 4)) 
         
         # 绘制日期区间对应的季节背景色  
         for i, (date, day_night) in enumerate(dates):  
