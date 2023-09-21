@@ -1,46 +1,15 @@
 import joblib
-import pymysql
-from itertools import chain
 import pandas as pd
-from pandas import Series,DataFrame
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.dates as mdates
 from matplotlib import ticker
-import time
-import datetime
-from scipy.stats import pearsonr
 import seaborn as sns
-# import KMeans
-from sklearn.cluster import KMeans
 import pickle
 import math
-from IPython import display
-
-from datetime import datetime
-from datetime import date
-
 from sklearn.decomposition import PCA
-from sklearn import preprocessing
-# 评估指标-----轮廓系数
-from sklearn.metrics import silhouette_score
-from sklearn.preprocessing import MaxAbsScaler  # 小数定标标准化
-from sklearn.preprocessing import MinMaxScaler  # 离差标准化
-from sklearn.preprocessing import StandardScaler  # 标准差标准化
-
 from scipy.cluster import hierarchy
-
-from collections import Counter
-
-import matplotlib as mpl
-from cycler import cycler # for mpl>2.2
-
-#import holoviews as hv
-#from holoviews import opts, dim
 from function import *
-
 from matplotlib import rcParams
-
 from matplotlib.pyplot import MultipleLocator
 
 config = {
