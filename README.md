@@ -1,3 +1,2 @@
 # doctor_bee
-Used for bee data analyse
-This is a readme file
+These four python files indicating the figures in our paper and they are used for bee data analyse
