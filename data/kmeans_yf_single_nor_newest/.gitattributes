@@ -1,1 +1,2 @@
 info_original_data.npy filter=lfs diff=lfs merge=lfs -text
+info_table.npy filter=lfs diff=lfs merge=lfs -text
