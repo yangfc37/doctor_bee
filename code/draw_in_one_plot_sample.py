@@ -8,7 +8,10 @@ import pickle
 import math
 from sklearn.decomposition import PCA
 from scipy.cluster import hierarchy
-from function import *
+
+from matplotlib import cm 
+from matplotlib.colors import PowerNorm
+
 from matplotlib import rcParams
 from matplotlib.pyplot import MultipleLocator
 

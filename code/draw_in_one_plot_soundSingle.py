@@ -4,19 +4,14 @@ from pandas import Series,DataFrame
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import ticker
-import time
-import datetime
 import seaborn as sns
 import pickle
 import math
-
-from datetime import datetime
-from datetime import date
 import matplotlib as mpl
 
-from function import *
-
+from datetime import *
 from matplotlib import rcParams
+import matplotlib.patches as mpatches
 from matplotlib.pyplot import MultipleLocator
 from matplotlib.font_manager import FontProperties
 
@@ -26,6 +21,128 @@ config = {
     "axes.unicode_minus": False #解决负号无法显示的问题
 }
 rcParams.update(config)
+
+def backGround_color(x_time, plot_set, ax):
+    if (plot_set == 1): #按四季进行背景色设置
+        spring_group = [[],[],[],[],[]]
+        summer_group = [[],[],[],[],[]]
+        autum_group = [[],[],[],[],[]]
+        winter_group = [[],[],[],[],[]]
+        for i in range (0, 5):
+            spring_group[i] = []
+            summer_group[i] = []
+            autum_group[i] = []
+            winter_group[i] = []
+
+        year_total = [2019, 2020, 2021, 2022, 2023]
+        year_append = []
+        for j in range(0, len(x_time)):
+            date = x_time[j].strftime('%Y-%m-%d')
+            month =int(date[5:7])
+            day = int(date[8:11])
+            year = int(date[0:4])
+            for k in range (0, len(year_total)):
+                if (year == year_total[k]):
+                    if (month > 3 and  month <= 6):
+                        spring_group[k].append(x_time[j])
+                    elif (month > 6 and  month <= 9):
+                        summer_group[k].append(x_time[j])
+                    elif(month > 9 and  month <= 12):
+                        autum_group[k].append(x_time[j])
+                    else:
+                        winter_group[k].append(x_time[j])
+        season_group = [spring_group, summer_group, autum_group, winter_group]
+
+        for i in range(0, len(season_group)):
+            for j in range(0, len(year_total)):
+                if len(season_group[i][j]):
+                    if (season_group[i][j] == spring_group[j]):
+                        ax.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='green', alpha=0.2)
+                    elif (season_group[i][j] == summer_group[j]):
+                        ax.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='red', alpha=0.2)
+                    elif (season_group[i][j] == autum_group[j]):
+                        ax.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='yellow', alpha=0.2)     
+                    elif (season_group[i][j] == winter_group[j]):
+                        ax.axvspan(season_group[i][j][0], season_group[i][j][len(season_group[i][j])-1], facecolor='blue', alpha=0.2) 
+    elif (plot_set == 2):
+        # 定义每个季节的起始月份  
+        seasons = {  
+            'spring': range(3, 6),  
+            'summer': range(6, 9),  
+            'autumn': range(9, 12),  
+            'winter': [*range(1, 3), 12]  
+        }  
+        season_color = {
+            'spring': 'green',  
+            'summer': 'red',  
+            'autumn': 'yellow',  
+            'winter': 'blue'  
+        }
+        
+        # 创建一个空列表，用于存储各个日期对应的季节  
+        dates = []  
+        
+        # 遍历一年的日期，并确定每个日期的季节  
+        start_date = x_time[0]  # 当年的1月1日作为起始日期  
+        end_date = x_time[len(x_time) -1]  # 当年的12月31日作为结束日期  
+        current_date = start_date  
+        
+        while current_date <= end_date:  
+            current_season = [season for season, month_range in seasons.items() if current_date.month in month_range][0]  
+            dates.append((current_date, current_season))  
+            current_date += timedelta(days=1)  
+        
+        # 设置图形大小          
+        # 绘制日期区间对应的季节背景色  
+        for i, (date, season) in enumerate(dates):  
+            if i < len(dates) - 1:  
+                ax.axvspan(dates[i][0], dates[i + 1][0], facecolor=season_color[season], alpha=0.1)  
+
+    elif (plot_set == 3):
+        # 定义每个昼夜的起始时间  
+        day_nights = {  
+            'day': range(6, 18),  
+            'night': [*range(18, 24), *range(0, 6)] 
+        }  
+        day_night_color = {
+            'day': 'white',  
+            'night': 'gray'  
+        }
+        
+        # 创建一个空列表，用于存储各个日期对应的季节  
+        dates = []  
+        
+        # 遍历一年的日期，并确定每个日期的季节  
+        start_date = x_time[0]  
+        end_date = x_time[len(x_time) -1]  
+        current_date = start_date  
+        
+        while current_date <= end_date:  
+            current_day_night = [day_night for day_night, time_range in day_nights.items() if current_date.hour in time_range][0]  
+            dates.append((current_date, current_day_night))  
+            current_date += timedelta(hours=0.5)  
+        
+        # 绘制日期区间对应的季节背景色  
+        for i, (date, day_night) in enumerate(dates):  
+            if i < len(dates) - 1:  
+                ax.axvspan(dates[i][0], dates[i + 1][0], facecolor=day_night_color[day_night], alpha=0.1)   
+                
+    else:  #按日落日出进行背景色设置
+        day_start_time = datetime.strptime("06:00", "%H:%M")  
+        night_start_time = datetime.strptime("18:00", "%H:%M")     
+        for i in range(0, len(x_time)):
+            times_adjusted = x_time[i].replace(year=day_start_time.year)
+            if (i!= (len(x_time)-1)): 
+                times_adjusted_next = x_time[i+1].replace(year=day_start_time.year)
+                times_delta = times_adjusted_next - times_adjusted
+                if (times_delta == timedelta(hours=0)):
+                    i = i+1
+                    continue
+                else:
+                    if (times_adjusted.time() >= day_start_time.time() and times_adjusted.time() < night_start_time.time()):
+                        ax.axvspan(x_time[i], x_time[i] + timedelta(hours=1), facecolor='red', alpha=0.1)  
+                    else:
+                        ax.axvspan(x_time[i], x_time[i] + timedelta(hours=1), facecolor='blue', alpha=0.1) 
 
 
 def plot_subplots_twin(x,y1,y2,ax1,label_font, y_labels):
@@ -167,7 +284,6 @@ def cal_xy_value(sn_num, individual_sn_yf, info_ypred, event_info):
                     time_index_arr  = np.unique(time_index_arr)
                     info_event_split = info_event_sn_sort[time_index_arr]
                     info_event_split_sort = info_event_split[np.argsort(info_event_split[:,0])]
-
 
     time = info_event_sn_sort[:,0]
     y_num = info_event_sn_sort[:,13]

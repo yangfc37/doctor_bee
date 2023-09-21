@@ -1,9 +1,9 @@
 import joblib
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import seaborn as sns
 import pickle
-from function import *
 from matplotlib import rcParams
 
 config = {
@@ -11,6 +11,38 @@ config = {
     "axes.unicode_minus": False #解决负号无法显示的问题
 }
 rcParams.update(config)
+
+def get_info(info, indexs, y_pred):
+    individuals_sn_info = np.unique(info[:,1])
+    clusters_months = []
+    clusters_hours = []
+    clusters_temperatures = []
+    clusters_individuals = []
+    for i in indexs:
+        months = info[y_pred == i, 5]
+        hours = info[y_pred == i, 7]
+        individuals = info[y_pred == i, 1]
+        temperatures = info[y_pred == i, 2]
+        sample_n = months.shape[0]
+        months_count = []
+        hours_count = []
+        temperatures_count = []
+        individuals_count = []
+        for k in range(1,13):
+            months_count.append(np.sum(months == '%02d'%k)*100/sample_n)
+        for k in range(0,24):
+            hours_count.append(np.sum(hours == '%02d'%k)*100/sample_n)
+        for k in range(-20, 50):
+            temperatures_count.append(np.sum(np.floor(temperatures) == k) * 100 / sample_n)
+        for k in individuals_sn_info:
+            individuals_count.append(np.sum(individuals == k) * 100 / sample_n)
+        clusters_months.append(months_count)
+        clusters_hours.append(hours_count)
+        clusters_temperatures.append(temperatures_count)
+        clusters_individuals.append(individuals_count)
+    return (clusters_months, clusters_hours, clusters_temperatures, clusters_individuals)
+
+
 
 def month_processing(clusters_months,ax, n_clusters):
     month_xticks = [j for j in range(1, 13)]
