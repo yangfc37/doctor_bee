@@ -230,7 +230,7 @@ def main():
     for k in labels:
         patterns_count.append(np.sum(patterns == k))
     patterns_percent = 100 * (patterns_count/sum(patterns_count))
-    patterns_percent_relative = 100*((patterns_percent - percents_all)/percents_all)
+    patterns_percent_relative = 100*((patterns_percent)/percents_all)
 
     ax5 = plt.subplot(grid[2,2:4])
     h1 = ax5.bar(range(n_clusters), np.array(patterns_percent_relative),color = 'r')
