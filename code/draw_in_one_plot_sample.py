@@ -182,11 +182,11 @@ def main():
     plt.tight_layout()
 
     #------------------------------------采样三次，不同聚类数量的样本集中度------------------------
-    plt.subplot(4,2,1)
+    ax = plt.subplot(4,2,1)
     x = np.arange(min_cluster, max_cluster, 1)
-    p1 = plt.plot(x, [i*100 for i in max_per_total_group[0]],linewidth=2.0, color = 'tab:blue', label = 'Trial 3')
-    p2 = plt.plot(x, [i*100 for i in max_per_total_group[1]],linewidth=2.0, color = 'tab:green', label = 'Trial 2')
-    p3 = plt.plot(x, [i*100 for i in max_per_total_group[2]],linewidth=2.0,color = 'tab:orange', label = 'Trial 1')
+    p1 = ax.plot(x, [i*100 for i in max_per_total_group[0]],linewidth=2.0, color = 'tab:blue', label = 'Trial 3')
+    p2 = ax.plot(x, [i*100 for i in max_per_total_group[1]],linewidth=2.0, color = 'tab:green', label = 'Trial 2')
+    p3 = ax.plot(x, [i*100 for i in max_per_total_group[2]],linewidth=2.0,color = 'tab:orange', label = 'Trial 1')
     plt.legend(fontsize=legend_front_size)
     plt.xlabel("Cluster Number", fontsize=labelx_front_size)
     plt.ylabel("Maximum Colony Proportion (%)",fontsize=labely_front_size)
@@ -196,6 +196,12 @@ def main():
     plt.ylim(0, 100)
     plt.grid()
 
+    ax1 = ax.inset_axes([15, 20, 20, 40], transform = ax.transData)
+    p11 = ax1.plot(x, [i*100 for i in max_per_total_group[0]],linewidth=2.0, color = 'tab:blue', label = 'Trial 3')
+    p21 = ax1.plot(x, [i*100 for i in max_per_total_group[1]],linewidth=2.0, color = 'tab:green', label = 'Trial 2')
+    p31 = ax1.plot(x, [i*100 for i in max_per_total_group[2]],linewidth=2.0,color = 'tab:orange', label = 'Trial 1')
+    ax1.set(xlim = (20,40), ylim=(85,100))
+    ax.indicate_inset_zoom(ax1)
     #-------------------------------采样三次，22类每类的分布情况-------------------------------------
     label = ['Trial 3', 'Trial 2', 'Trial 1', 'Pattern', 'Proportion(%)']
 
